@@ -5,15 +5,23 @@ import (
 	"fmt"
 )
 
+type Handler struct {
+	divisor int
+	text    string
+}
+
+var ClassicHandlers = []Handler{
+	{3, "fizz"},
+	{5, "buzz"}}
+
 func handleNumber(i int) (s string) {
-	if i%3 == 0 {
-		s += "fizz"
-	}
-	if i%5 == 0 {
-		s += "buzz"
+	for _, h := range ClassicHandlers {
+		if i%h.divisor == 0 {
+			s += h.text
+		}
 	}
 	if len(s) == 0 {
-		s += fmt.Sprint(i)
+		s = fmt.Sprint(i)
 	}
 	return
 }
