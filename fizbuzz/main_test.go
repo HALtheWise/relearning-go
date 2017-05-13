@@ -13,7 +13,11 @@ var testTable = []struct {
 	{1, "1"},
 	{3, "fizz"},
 	{5, "buzz"},
-	{15, "fizzbuzz"}}
+	{7, "7"},
+	{15, "fizzbuzz"},
+	{-19, "-19"},
+	{3e10, "fizzbuzz"},
+}
 
 func TestClassicFizzbuzz(t *testing.T) {
 	for _, testcase := range testTable {
@@ -40,7 +44,7 @@ func TestFuzzing(t *testing.T) {
 				t.Errorf("Number %d failed: output had length 0", n)
 			}
 
-			// TODO other checks that can be done regardless of input type
+			// TODO other checks that can be done regardless of input value
 		}
 	}
 }
