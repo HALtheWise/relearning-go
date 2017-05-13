@@ -48,7 +48,7 @@ func solveGrid(g *Grid) (success bool, newgrid *Grid) {
 			// TODO Make sure that grid is getting put on stack instead of heap
 			grid := g.Copy()
 			grid.Update()
-			grid.FixedValues[i][j] = int8(k)
+			grid.FixedValues[i][j] = GridValue(k)
 
 			succ, grid := solveGrid(grid)
 			if succ {

@@ -7,23 +7,33 @@ import (
 	"strings"
 )
 
+type GridCoord struct{ row, col int }
+type GridValue int8
+
 type Grid struct {
-	FixedValues    [9][9]int8
+	FixedValues    [9][9]GridValue
 	PossibleValues [9][9][9]bool
 }
 
-func (g *Grid) getConflictValues(i, j int) (conflicts []int8) {
-	// TODO fix naming conventions for variables
-	for ii := 0; ii < 9; ii++ {
+func (g *Grid) GetFixedValue(coord GridCoord) GridValue {
+	return g.FixedValues[coord.row][coord.col]
+}
+
+func (g *Grid) GetPossibleValues(coord GridCoord) [9]bool {
+	return g.PossibleValues[coord.row][coord.col]
+}
+
+func (g *Grid) getConflictValues(coord GridCoord) (conflicts []GridValue) {
+	for row := 0; row < 9; row++ {
 		// Add the values in my column but not in my row
-		if i != ii {
-			conflicts = append(conflicts, g.FixedValues[ii][j])
+		if coord.row != row {
+			conflicts = append(conflicts, g.FixedValues[row][coord.col])
 		}
 	}
-	for jj := 0; jj < 9; jj++ {
+	for col := 0; col < 9; col++ {
 		// Add the values in my row but not in my column
-		if j != jj {
-			conflicts = append(conflicts, g.FixedValues[i][jj])
+		if coord.col != col {
+			conflicts = append(conflicts, g.FixedValues[coord.row][col])
 		}
 	}
 
@@ -35,23 +45,23 @@ func (g *Grid) getConflictValues(i, j int) (conflicts []int8) {
 func (g *Grid) Update() {
 	for i := 0; i < 9; i++ {
 		for j := 0; j < 9; j++ {
-			g.updatePossibilities(i, j)
+			g.updatePossibilities(GridCoord{i, j})
 		}
 	}
 }
 
-func (g *Grid) updatePossibilities(i, j int) {
+func (g *Grid) updatePossibilities(coord GridCoord) {
 	// TODO Be able to do this operation incrementally whenever an element is added to the grid
 	// Reset all possiblities to "true"
 	for k := 0; k < 9; k++ {
-		g.PossibleValues[i][j][k] = true
+		g.PossibleValues[coord.row][coord.col][k] = true
 	}
 
-	conflicts := g.getConflictValues(i, j)
+	conflicts := g.getConflictValues(coord)
 
 	for _, v := range conflicts {
 		if v != 0 {
-			g.PossibleValues[i][j][v-1] = false
+			g.PossibleValues[coord.row][coord.col][v-1] = false
 		}
 	}
 }
@@ -104,7 +114,7 @@ func GridFromString(s string) (*Grid, error) {
 			} else {
 				val = int(c - '0')
 			}
-			g.FixedValues[i][j] = int8(val)
+			g.FixedValues[i][j] = GridValue(val)
 		}
 	}
 	g.Update()
