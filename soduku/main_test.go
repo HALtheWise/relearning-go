@@ -12,3 +12,5 @@ func BenchmarkEuler(b *testing.B) {
 		}
 	}
 }
+
+func TestEuler()

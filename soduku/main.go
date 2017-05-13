@@ -2,6 +2,7 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 )
 
@@ -67,6 +68,23 @@ func processGrid(grid *Grid) {
 	fmt.Printf("\n\n%v\n%s\n", succ, g2)
 }
 
+func solveEuler() ([]int, int, error) {
+	sum := 0
+	var results []int
+	for i, grid := range eulerGrids {
+		succ, newgrid := solveGrid(grid)
+		if !succ {
+			return nil, -1, errors.New(fmt.Sprintf("Unable to solve Euler grid #%d", i+1))
+		}
+		val := int(newgrid.GetFixedValue(GridCoord{0, 0}))*100 + int(newgrid.GetFixedValue(GridCoord{0, 1}))*10 + int(newgrid.GetFixedValue(GridCoord{0, 2}))
+		results = append(results, val)
+		sum += val
+	}
+	return results, sum, nil
+}
+
 func main() {
-	processGrid(eulerGrids[0])
+	//	processGrid(eulerGrids[0])
+	results, sum, _ := solveEuler()
+	fmt.Println(results, sum)
 }
