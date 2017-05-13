@@ -5,17 +5,21 @@ import (
 	"fmt"
 )
 
-func main() {
-	for i := 1; i < 100; i++ {
-		if i%15 == 0 {
-			fmt.Println("fizbuzz")
-		} else if i%3 == 0 {
-			fmt.Println("fizz")
-		} else if i%5 == 0 {
-			fmt.Println("buzz")
-		} else {
+func handleNumber(i int) (s string) {
+	if i%3 == 0 {
+		s += "fizz"
+	}
+	if i%5 == 0 {
+		s += "buzz"
+	}
+	if len(s) == 0 {
+		s += fmt.Sprint(i)
+	}
+	return
+}
 
-			fmt.Printf("%d\n", i)
-		}
+func main() {
+	for i := 1; i <= 100; i++ {
+		fmt.Println(handleNumber(i))
 	}
 }
