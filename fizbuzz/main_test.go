@@ -19,7 +19,7 @@ func TestClassicFizzbuzz(t *testing.T) {
 	for _, testcase := range testTable {
 		result := handleNumber(testcase.input, ClassicHandlers)
 		if result != testcase.output {
-			t.Errorf("Number %d failed: output was %s but should have been %s",
+			t.Errorf("Number %d failed: output was \"%s\" but should have been \"%s\"",
 				testcase.input, result, testcase.output)
 		}
 	}
@@ -39,6 +39,8 @@ func TestFuzzing(t *testing.T) {
 			if len(result) == 0 {
 				t.Errorf("Number %d failed: output had length 0", n)
 			}
+
+			// TODO other checks that can be done regardless of input type
 		}
 	}
 }

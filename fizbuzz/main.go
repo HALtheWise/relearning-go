@@ -5,23 +5,19 @@ import (
 	"fmt"
 )
 
-type Handler struct {
-	divisor int
-	text    string
+type Handler interface {
+	process(i int, input string) (output string)
 }
 
 var ClassicHandlers = []Handler{
-	{3, "fizz"},
-	{5, "buzz"}}
+	DivisorHandler{3, "fizz"},
+	DivisorHandler{5, "buzz"},
+	NumberHandler{},
+}
 
-func handleNumber(i int, handlers []Handler) (s string) {
+func handleNumber(n int, handlers []Handler) (s string) {
 	for _, h := range handlers {
-		if i%h.divisor == 0 {
-			s += h.text
-		}
-	}
-	if len(s) == 0 {
-		s = fmt.Sprint(i)
+		s = h.process(n, s)
 	}
 	return
 }
