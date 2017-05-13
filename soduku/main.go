@@ -48,8 +48,8 @@ func solveGrid(g *Grid) (success bool, newgrid *Grid) {
 		if g.PossibleValues[i][j][k-1] == true {
 			// TODO Make sure that grid is getting put on stack instead of heap
 			grid := g.Copy()
-			grid.Update()
 			grid.FixedValues[i][j] = GridValue(k)
+			grid.Update()
 
 			succ, grid := solveGrid(grid)
 			if succ {
@@ -76,7 +76,9 @@ func solveEuler() ([]int, int, error) {
 		if !succ {
 			return nil, -1, errors.New(fmt.Sprintf("Unable to solve Euler grid #%d", i+1))
 		}
-		val := int(newgrid.GetFixedValue(GridCoord{0, 0}))*100 + int(newgrid.GetFixedValue(GridCoord{0, 1}))*10 + int(newgrid.GetFixedValue(GridCoord{0, 2}))
+		val := int(newgrid.GetFixedValue(GridCoord{0, 0}))*100 +
+			int(newgrid.GetFixedValue(GridCoord{0, 1}))*10 +
+			int(newgrid.GetFixedValue(GridCoord{0, 2}))
 		results = append(results, val)
 		sum += val
 	}
@@ -84,7 +86,7 @@ func solveEuler() ([]int, int, error) {
 }
 
 func main() {
-	//	processGrid(eulerGrids[0])
+	//	processGrid(s04a)
 	results, sum, _ := solveEuler()
 	fmt.Println(results, sum)
 }

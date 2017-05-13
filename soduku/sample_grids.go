@@ -10,7 +10,8 @@ import (
 
 var (
 	blankGrid,
-	nearlyFull *Grid
+	nearlyFull,
+	s04a *Grid
 	eulerGrids []*Grid
 )
 
@@ -33,6 +34,15 @@ func init() {
 123456789
 123456789
 19345678*`)
+	s04a, _ = GridFromString(`050090000
+004800009
+000107280
+560000137
+000000000
+173000042
+021508000
+600003800
+000010060`)
 }
 
 func init() {

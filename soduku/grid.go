@@ -27,13 +27,13 @@ func (g *Grid) getConflictValues(coord GridCoord) (conflicts []GridValue) {
 	for row := 0; row < 9; row++ {
 		// Add the values in my column but not in my row
 		if coord.row != row {
-			conflicts = append(conflicts, g.FixedValues[row][coord.col])
+			conflicts = append(conflicts, g.GetFixedValue(GridCoord{row: row, col: coord.col}))
 		}
 	}
 	for col := 0; col < 9; col++ {
 		// Add the values in my row but not in my column
 		if coord.col != col {
-			conflicts = append(conflicts, g.FixedValues[coord.row][col])
+			conflicts = append(conflicts, g.GetFixedValue(GridCoord{row: coord.row, col: col}))
 		}
 	}
 
@@ -99,8 +99,14 @@ func (g *Grid) IsSolved() bool {
 func (g *Grid) String() string {
 	var lines []string
 	for row := 0; row < 9; row++ {
+		if row > 0 && row%3 == 0 {
+			lines = append(lines, "-----------")
+		}
 		var s []string
 		for col := 0; col < 9; col++ {
+			if col > 0 && col%3 == 0 {
+				s = append(s, "|")
+			}
 			val := g.FixedValues[row][col]
 			if val == 0 {
 				s = append(s, "*")
