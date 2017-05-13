@@ -68,9 +68,7 @@ func processGrid(grid *Grid) {
 	fmt.Printf("\n\n%v\n%s\n", succ, g2)
 }
 
-func solveEuler() ([]int, int, error) {
-	sum := 0
-	var results []int
+func solveEuler() (results [][9][9]GridValue, sum int, err error) {
 	for i, grid := range eulerGrids {
 		succ, newgrid := solveGrid(grid)
 		if !succ {
@@ -79,14 +77,14 @@ func solveEuler() ([]int, int, error) {
 		val := int(newgrid.GetFixedValue(GridCoord{0, 0}))*100 +
 			int(newgrid.GetFixedValue(GridCoord{0, 1}))*10 +
 			int(newgrid.GetFixedValue(GridCoord{0, 2}))
-		results = append(results, val)
+		results = append(results, newgrid.FixedValues)
 		sum += val
 	}
-	return results, sum, nil
+	return
 }
 
 func main() {
-	//	processGrid(s04a)
-	results, sum, _ := solveEuler()
-	fmt.Println(results, sum)
+	processGrid(s04a)
+	//	_, sum, _ := solveEuler()
+	//	fmt.Println(sum)
 }
