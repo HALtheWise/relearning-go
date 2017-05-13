@@ -17,7 +17,7 @@ var testTable = []struct {
 
 func TestClassicFizzbuzz(t *testing.T) {
 	for _, testcase := range testTable {
-		result := handleNumber(testcase.input)
+		result := handleNumber(testcase.input, ClassicHandlers)
 		if result != testcase.output {
 			t.Errorf("Number %d failed: output was %s but should have been %s",
 				testcase.input, result, testcase.output)
@@ -27,14 +27,18 @@ func TestClassicFizzbuzz(t *testing.T) {
 
 const FUZZ_COUNT = 1000
 
-func TestFuzzing(t *testing.T) {
-	for i := 0; i < FUZZ_COUNT; i++ {
-		n := rand.Intn(100)
-		result := handleNumber(n)
+var FUZZ_HANDLERS = [][]Handler{ClassicHandlers}
 
-		// Check for a 0-length output
-		if len(result) == 0 {
-			t.Errorf("Number %d failed: output had length 0", n)
+func TestFuzzing(t *testing.T) {
+	for _, handlers := range FUZZ_HANDLERS {
+		for i := 0; i < FUZZ_COUNT; i++ {
+			n := rand.Intn(100)
+			result := handleNumber(n, handlers)
+
+			// Check for a 0-length output
+			if len(result) == 0 {
+				t.Errorf("Number %d failed: output had length 0", n)
+			}
 		}
 	}
 }

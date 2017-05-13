@@ -14,8 +14,8 @@ var ClassicHandlers = []Handler{
 	{3, "fizz"},
 	{5, "buzz"}}
 
-func handleNumber(i int) (s string) {
-	for _, h := range ClassicHandlers {
+func handleNumber(i int, handlers []Handler) (s string) {
+	for _, h := range handlers {
 		if i%h.divisor == 0 {
 			s += h.text
 		}
@@ -26,8 +26,12 @@ func handleNumber(i int) (s string) {
 	return
 }
 
-func main() {
-	for i := 1; i <= 100; i++ {
-		fmt.Println(handleNumber(i))
+func RunFizzBuzz(start, end int, handlers []Handler) {
+	for i := start; i <= end; i++ {
+		fmt.Println(handleNumber(i, handlers))
 	}
+}
+
+func main() {
+	RunFizzBuzz(1, 100, ClassicHandlers)
 }
