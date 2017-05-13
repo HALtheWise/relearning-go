@@ -60,11 +60,13 @@ func solveGrid(g *Grid) (success bool, newgrid *Grid) {
 	return false, nil
 }
 
-func main() {
-	//	fmt.Println("Hello World!")
-	fmt.Println(nearlyFull)
-	fmt.Println(nearlyFull.PossibleValues[8][8])
+func processGrid(grid *Grid) {
+	fmt.Println(grid)
 
-	succ, g2 := solveGrid(nearlyFull)
+	succ, g2 := solveGrid(grid)
 	fmt.Printf("\n\n%v\n%s\n", succ, g2)
+}
+
+func main() {
+	processGrid(eulerGrids[0])
 }
