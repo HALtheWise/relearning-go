@@ -39,6 +39,19 @@ func (g *Grid) getConflictValues(coord GridCoord) (conflicts []GridValue) {
 
 	// Add the values in my box that aren't me
 	// TODO this
+	root := GridCoord{
+		row: (coord.row / 3) * 3,
+		col: (coord.col / 3) * 3}
+
+	var test GridCoord
+	for test.row = root.row; test.row < root.row+3; test.row++ {
+		for test.col = root.col; test.col < root.col+3; test.col++ {
+			if test != coord {
+				conflicts = append(conflicts, g.GetFixedValue(test))
+			}
+		}
+	}
+
 	return
 }
 
