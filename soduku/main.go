@@ -6,7 +6,8 @@ import (
 	"fmt"
 )
 
-var problem = nearlyFull
+// TODO Make a global list of all GridCoords to simplify nested iterations
+// TODO Eliminate all accesses to private fields in this file
 
 // solveGrid is the primary recursive solver for ...
 func solveGrid(g *Grid) (success bool, newgrid *Grid) {
@@ -26,12 +27,7 @@ func solveGrid(g *Grid) (success bool, newgrid *Grid) {
 				// This cell is already filled
 				continue
 			}
-			numOptions := 0
-			for k := 0; k < 9; k++ {
-				if g.possibleValues[i][j][k] == true {
-					numOptions++
-				}
-			}
+			numOptions := g.getNumOptions(GridCoord{i, j})
 
 			if numOptions < mostPromising.numOptions {
 				mostPromising.i = i

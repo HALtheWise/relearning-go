@@ -11,13 +11,22 @@ type GridCoord struct{ row, col int }
 type GridValue int8
 
 type Grid struct {
-	filledCells    int
-	fixedValues    [9][9]GridValue
-	possibleValues [9][9][9]bool
+	filledCells             int
+	fixedValues             [9][9]GridValue
+	eliminatedPossibilities [9][9]int
+	possibleValues          [9][9][9]bool
 }
 
 func (g *Grid) updateConflict(coord GridCoord, other GridValue) {
-	g.possibleValues[coord.row][coord.col][other-1] = false
+	wasPossible := g.possibleValues[coord.row][coord.col][other-1]
+	if wasPossible {
+		g.possibleValues[coord.row][coord.col][other-1] = false
+		g.eliminatedPossibilities[coord.row][coord.col]++
+	}
+}
+
+func (g *Grid) getNumOptions(coord GridCoord) int {
+	return 9 - g.eliminatedPossibilities[coord.row][coord.col]
 }
 
 func (g *Grid) SetValue(coord GridCoord, value GridValue) {
