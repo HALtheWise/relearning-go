@@ -6,7 +6,6 @@ import (
 	"fmt"
 )
 
-// TODO Make a global list of all GridCoords to simplify nested iterations
 // TODO Eliminate all accesses to private fields in this file
 
 // solveGrid is the primary recursive solver for ...
@@ -18,32 +17,31 @@ func solveGrid(g *Grid) (success bool, newgrid *Grid) {
 	// Step 1: find the most promising cell to fill
 	// Heuristic: the unfilled cell with the fewest possibilities
 	// TODO cache this data in the grid and update it dynamically
-	var mostPromising struct{ i, j, numOptions int }
+	var mostPromising struct {
+		coord      GridCoord
+		numOptions int
+	}
 	mostPromising.numOptions = 999
 
-	for i := 0; i < 9; i++ {
-		for j := 0; j < 9; j++ {
-			if g.fixedValues[i][j] != 0 {
-				// This cell is already filled
-				continue
-			}
-			numOptions := g.getNumOptions(GridCoord{i, j})
+	for _, coord := range AllCoords {
+		if g.GetFixedValue(coord) != 0 {
+			// This cell is already filled
+			continue
+		}
+		numOptions := g.getNumOptions(coord)
 
-			if numOptions < mostPromising.numOptions {
-				mostPromising.i = i
-				mostPromising.j = j
-				mostPromising.numOptions = numOptions
-			}
+		if numOptions < mostPromising.numOptions {
+			mostPromising.coord = coord
+			mostPromising.numOptions = numOptions
 		}
 	}
 
 	// Step 2: For each option, consider it by recursing
-	i := mostPromising.i
-	j := mostPromising.j
-	for k := 1; k <= 9; k++ {
-		if g.possibleValues[i][j][k-1] == true {
+	coord := mostPromising.coord
+	for k := GridValue(1); k <= 9; k++ {
+		if g.CanTakeValue(coord, k) {
 			grid := g.Clone()
-			grid.SetValue(GridCoord{i, j}, GridValue(k))
+			grid.SetValue(coord, k)
 
 			succ, grid := solveGrid(grid)
 			if succ {

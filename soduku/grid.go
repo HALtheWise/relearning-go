@@ -10,11 +10,29 @@ import (
 type GridCoord struct{ row, col int }
 type GridValue int8
 
+var AllCoords []GridCoord
+
+func init() {
+	for row := 0; row < 9; row++ {
+		for col := 0; col < 9; col++ {
+			AllCoords = append(AllCoords, GridCoord{row, col})
+		}
+	}
+}
+
 type Grid struct {
 	filledCells             int
 	fixedValues             [9][9]GridValue
-	eliminatedPossibilities [9][9]int
+	eliminatedPossibilities [9][9]int8
 	possibleValues          [9][9][9]bool
+}
+
+func (g *Grid) getNumOptions(coord GridCoord) int {
+	return 9 - int(g.eliminatedPossibilities[coord.row][coord.col])
+}
+
+func (g *Grid) CanTakeValue(coord GridCoord, value GridValue) bool {
+	return g.possibleValues[coord.row][coord.col][value-1]
 }
 
 func (g *Grid) updateConflict(coord GridCoord, other GridValue) {
@@ -24,11 +42,6 @@ func (g *Grid) updateConflict(coord GridCoord, other GridValue) {
 		g.eliminatedPossibilities[coord.row][coord.col]++
 	}
 }
-
-func (g *Grid) getNumOptions(coord GridCoord) int {
-	return 9 - g.eliminatedPossibilities[coord.row][coord.col]
-}
-
 func (g *Grid) SetValue(coord GridCoord, value GridValue) {
 	g.filledCells++
 	g.fixedValues[coord.row][coord.col] = value
@@ -40,31 +53,29 @@ func (g *Grid) GetFixedValue(coord GridCoord) GridValue {
 	return g.fixedValues[coord.row][coord.col]
 }
 
-func (g *Grid) GetPossibleValues(coord GridCoord) [9]bool {
-	return g.possibleValues[coord.row][coord.col]
-}
-
 func (g *Grid) updateAllConflicts(coord GridCoord, value GridValue) {
-	for row := 0; row < 9; row++ {
+
+	test := coord
+	for test.row = 0; test.row < 9; test.row++ {
 		// Add the values in my column but not in my row
-		if coord.row != row {
-			g.updateConflict(GridCoord{row: row, col: coord.col}, value)
+		if coord.row != test.row {
+			g.updateConflict(test, value)
 		}
 	}
-	for col := 0; col < 9; col++ {
+
+	test = coord
+	for test.col = 0; test.col < 9; test.col++ {
 		// Add the values in my row but not in my column
-		if coord.col != col {
-			g.updateConflict(GridCoord{row: coord.row, col: col}, value)
+		if coord.col != test.col {
+			g.updateConflict(test, value)
 		}
 	}
 
 	// Add the values in my box that aren't me
-	// TODO this
 	root := GridCoord{
 		row: (coord.row / 3) * 3,
 		col: (coord.col / 3) * 3}
 
-	var test GridCoord
 	for test.row = root.row; test.row < root.row+3; test.row++ {
 		for test.col = root.col; test.col < root.col+3; test.col++ {
 			if test != coord {
@@ -78,31 +89,27 @@ func (g *Grid) updateAllConflicts(coord GridCoord, value GridValue) {
 
 func (g *Grid) Update() {
 	// Reset all possiblities to "true"
-	var coord GridCoord
-	for coord.row = 0; coord.row < 9; coord.row++ {
-		for coord.col = 0; coord.col < 9; coord.col++ {
-			for k := 0; k < 9; k++ {
-				g.possibleValues[coord.row][coord.col][k] = true
-			}
+	for _, coord := range AllCoords {
+		for k := 0; k < 9; k++ {
+			g.possibleValues[coord.row][coord.col][k] = true
 		}
 	}
+
 	g.filledCells = 0
 
 	// Update all possibilities using existing values in the grid
-	for coord.row = 0; coord.row < 9; coord.row++ {
-		for coord.col = 0; coord.col < 9; coord.col++ {
-			value := g.GetFixedValue(coord)
+	for _, coord := range AllCoords {
+		value := g.GetFixedValue(coord)
 
-			if value != 0 {
-				g.filledCells++
-				g.updateAllConflicts(coord, value)
-			}
+		if value != 0 {
+			g.filledCells++
+			g.updateAllConflicts(coord, value)
 		}
 	}
 }
 
 func (g *Grid) Clone() *Grid {
-	// TODO There is probably a nicer way to do this
+	// TODO There is probably a nicer way to do this that is stack-compatible
 	newgrid := *g
 	return &newgrid
 }
@@ -122,7 +129,7 @@ func (g *Grid) String() string {
 			if col > 0 && col%3 == 0 {
 				s = append(s, "|")
 			}
-			val := g.fixedValues[row][col]
+			val := g.GetFixedValue(GridCoord{row: row, col: col})
 			if val == 0 {
 				s = append(s, "*")
 			} else {
