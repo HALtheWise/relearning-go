@@ -8,7 +8,7 @@ import (
 
 var problem = nearlyFull
 
-// Recursive
+// solveGrid is the primary recursive solver for ...
 func solveGrid(g *Grid) (success bool, newgrid *Grid) {
 	if g.IsSolved() {
 		return true, g
