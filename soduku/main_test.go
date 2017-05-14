@@ -7,12 +7,19 @@ import (
 	"testing"
 )
 
+// BenchmarkEuler tests the code on the Project Euler repository of Sudoko grids.
+// Note that each grid is treated as a single iteration for the purposes of
+// computing averaged statistics, rather than a complete run through the dataset
+// being one iteration in order to get more useful memory allocation statistics
 func BenchmarkEuler(b *testing.B) {
 	b.ReportAllocs()
+	// Ensure that the number of benchmarks is a multiple of len(eulerGrids)
+	numGrids := len(eulerGrids)
+	b.N = int(b.N/numGrids) * numGrids
+
+	// Run the test
 	for i := 0; i < b.N; i++ {
-		for i := 0; i < len(eulerGrids); i++ {
-			solveGrid(*eulerGrids[i])
-		}
+		solveGrid(*eulerGrids[i%numGrids])
 	}
 }
 
