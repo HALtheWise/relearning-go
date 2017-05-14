@@ -49,42 +49,33 @@ func (g *Grid) SetValue(coord GridCoord, value GridValue) {
 	g.updateAllConflicts(coord, value)
 }
 
-func (g *Grid) GetFixedValue(coord GridCoord) GridValue {
+func (g *Grid) GetValue(coord GridCoord) GridValue {
 	return g.fixedValues[coord.row][coord.col]
 }
 
 func (g *Grid) updateAllConflicts(coord GridCoord, value GridValue) {
-
+	// Consider the values in my column
 	test := coord
 	for test.row = 0; test.row < 9; test.row++ {
-		// Add the values in my column but not in my row
-		if coord.row != test.row {
-			g.updateConflict(test, value)
-		}
+		g.updateConflict(test, value)
 	}
 
+	// Consider the values in my row
 	test = coord
 	for test.col = 0; test.col < 9; test.col++ {
-		// Add the values in my row but not in my column
-		if coord.col != test.col {
-			g.updateConflict(test, value)
-		}
+		g.updateConflict(test, value)
 	}
 
-	// Add the values in my box that aren't me
+	// Consider the values in my 3x3 box
 	root := GridCoord{
 		row: (coord.row / 3) * 3,
 		col: (coord.col / 3) * 3}
 
 	for test.row = root.row; test.row < root.row+3; test.row++ {
 		for test.col = root.col; test.col < root.col+3; test.col++ {
-			if test != coord {
-				g.updateConflict(test, value)
-			}
+			g.updateConflict(test, value)
 		}
 	}
-
-	return
 }
 
 func (g *Grid) Update() {
@@ -99,7 +90,7 @@ func (g *Grid) Update() {
 
 	// Update all possibilities using existing values in the grid
 	for _, coord := range AllCoords {
-		value := g.GetFixedValue(coord)
+		value := g.GetValue(coord)
 
 		if value != 0 {
 			g.filledCells++
@@ -129,7 +120,7 @@ func (g *Grid) String() string {
 			if col > 0 && col%3 == 0 {
 				s = append(s, "|")
 			}
-			val := g.GetFixedValue(GridCoord{row: row, col: col})
+			val := g.GetValue(GridCoord{row: row, col: col})
 			if val == 0 {
 				s = append(s, "*")
 			} else {

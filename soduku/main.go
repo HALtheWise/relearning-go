@@ -25,7 +25,7 @@ func solveGrid(g Grid) (success bool, newgrid *Grid) {
 	mostPromising.numOptions = 999
 
 	for _, coord := range AllCoords {
-		if g.GetFixedValue(coord) != 0 {
+		if g.GetValue(coord) != 0 {
 			// This cell is already filled
 			continue
 		}
@@ -67,9 +67,9 @@ func solveEuler() (results [][9][9]GridValue, sum int, err error) {
 		if !succ {
 			return nil, -1, errors.New(fmt.Sprintf("Unable to solve Euler grid #%d", i+1))
 		}
-		val := int(newgrid.GetFixedValue(GridCoord{0, 0}))*100 +
-			int(newgrid.GetFixedValue(GridCoord{0, 1}))*10 +
-			int(newgrid.GetFixedValue(GridCoord{0, 2}))
+		val := int(newgrid.GetValue(GridCoord{0, 0}))*100 +
+			int(newgrid.GetValue(GridCoord{0, 1}))*10 +
+			int(newgrid.GetValue(GridCoord{0, 2}))
 		results = append(results, newgrid.fixedValues)
 		sum += val
 	}
