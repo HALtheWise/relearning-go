@@ -108,10 +108,10 @@ func (g *Grid) Update() {
 	}
 }
 
-func (g *Grid) Clone() *Grid {
+func (g *Grid) Clone() (newgrid Grid) {
 	// TODO There is probably a nicer way to do this that is stack-compatible
-	newgrid := *g
-	return &newgrid
+	newgrid = *g
+	return
 }
 
 func (g *Grid) IsSolved() bool {

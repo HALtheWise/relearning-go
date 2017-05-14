@@ -9,9 +9,10 @@ import (
 // TODO Eliminate all accesses to private fields in this file
 
 // solveGrid is the primary recursive solver for ...
-func solveGrid(g *Grid) (success bool, newgrid *Grid) {
+func solveGrid(g Grid) (success bool, newgrid *Grid) {
 	if g.IsSolved() {
-		return true, g
+		heapgrid := g.Clone()
+		return true, &heapgrid
 	}
 
 	// Step 1: find the most promising cell to fill
@@ -43,9 +44,9 @@ func solveGrid(g *Grid) (success bool, newgrid *Grid) {
 			grid := g.Clone()
 			grid.SetValue(coord, k)
 
-			succ, grid := solveGrid(grid)
+			succ, heapgrid := solveGrid(grid)
 			if succ {
-				return true, grid
+				return true, heapgrid
 			}
 		}
 	}
@@ -56,13 +57,13 @@ func solveGrid(g *Grid) (success bool, newgrid *Grid) {
 func processGrid(grid *Grid) {
 	fmt.Println(grid)
 
-	succ, g2 := solveGrid(grid)
+	succ, g2 := solveGrid(*grid)
 	fmt.Printf("\n\n%v\n%s\n", succ, g2)
 }
 
 func solveEuler() (results [][9][9]GridValue, sum int, err error) {
 	for i, grid := range eulerGrids {
-		succ, newgrid := solveGrid(grid)
+		succ, newgrid := solveGrid(*grid)
 		if !succ {
 			return nil, -1, errors.New(fmt.Sprintf("Unable to solve Euler grid #%d", i+1))
 		}
