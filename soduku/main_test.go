@@ -8,6 +8,7 @@ import (
 )
 
 func BenchmarkEuler(b *testing.B) {
+	b.ReportAllocs()
 	for i := 0; i < b.N; i++ {
 		for i := 0; i < len(eulerGrids); i++ {
 			solveGrid(eulerGrids[i])
