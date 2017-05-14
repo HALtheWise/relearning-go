@@ -11,6 +11,7 @@ type GridCoord struct{ row, col int }
 type GridValue int8
 
 type Grid struct {
+	filledCells    int
 	fixedValues    [9][9]GridValue
 	possibleValues [9][9][9]bool
 }
@@ -20,6 +21,7 @@ func (g *Grid) updateConflict(coord GridCoord, other GridValue) {
 }
 
 func (g *Grid) SetValue(coord GridCoord, value GridValue) {
+	g.filledCells++
 	g.fixedValues[coord.row][coord.col] = value
 
 	g.updateAllConflicts(coord, value)
@@ -75,6 +77,7 @@ func (g *Grid) Update() {
 			}
 		}
 	}
+	g.filledCells = 0
 
 	// Update all possibilities using existing values in the grid
 	for coord.row = 0; coord.row < 9; coord.row++ {
@@ -82,6 +85,7 @@ func (g *Grid) Update() {
 			value := g.GetFixedValue(coord)
 
 			if value != 0 {
+				g.filledCells++
 				g.updateAllConflicts(coord, value)
 			}
 		}
@@ -95,14 +99,7 @@ func (g *Grid) Clone() *Grid {
 }
 
 func (g *Grid) IsSolved() bool {
-	for i := 0; i < 9; i++ {
-		for j := 0; j < 9; j++ {
-			if g.fixedValues[i][j] == 0 {
-				return false
-			}
-		}
-	}
-	return true
+	return g.filledCells == 81
 }
 
 func (g *Grid) String() string {

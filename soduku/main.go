@@ -46,7 +46,6 @@ func solveGrid(g *Grid) (success bool, newgrid *Grid) {
 	j := mostPromising.j
 	for k := 1; k <= 9; k++ {
 		if g.possibleValues[i][j][k-1] == true {
-			// TODO Make sure that grid is getting put on stack instead of heap
 			grid := g.Clone()
 			grid.SetValue(GridCoord{i, j}, GridValue(k))
 
