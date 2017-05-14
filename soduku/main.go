@@ -22,13 +22,13 @@ func solveGrid(g *Grid) (success bool, newgrid *Grid) {
 
 	for i := 0; i < 9; i++ {
 		for j := 0; j < 9; j++ {
-			if g.FixedValues[i][j] != 0 {
+			if g.fixedValues[i][j] != 0 {
 				// This cell is already filled
 				continue
 			}
 			numOptions := 0
 			for k := 0; k < 9; k++ {
-				if g.PossibleValues[i][j][k] == true {
+				if g.possibleValues[i][j][k] == true {
 					numOptions++
 				}
 			}
@@ -45,10 +45,10 @@ func solveGrid(g *Grid) (success bool, newgrid *Grid) {
 	i := mostPromising.i
 	j := mostPromising.j
 	for k := 1; k <= 9; k++ {
-		if g.PossibleValues[i][j][k-1] == true {
+		if g.possibleValues[i][j][k-1] == true {
 			// TODO Make sure that grid is getting put on stack instead of heap
-			grid := g.Copy()
-			grid.FixedValues[i][j] = GridValue(k)
+			grid := g.Clone()
+			grid.fixedValues[i][j] = GridValue(k)
 			grid.Update()
 
 			succ, grid := solveGrid(grid)
@@ -77,7 +77,7 @@ func solveEuler() (results [][9][9]GridValue, sum int, err error) {
 		val := int(newgrid.GetFixedValue(GridCoord{0, 0}))*100 +
 			int(newgrid.GetFixedValue(GridCoord{0, 1}))*10 +
 			int(newgrid.GetFixedValue(GridCoord{0, 2}))
-		results = append(results, newgrid.FixedValues)
+		results = append(results, newgrid.fixedValues)
 		sum += val
 	}
 	return
