@@ -47,7 +47,7 @@ func init() {
 
 func init() {
 	var err error
-	eulerGrids, err = loadEulerGrids("euler_puzzles.txt")
+	eulerGrids, err = loadEulerGrids("test_data/euler_puzzles.txt")
 	if err != nil {
 		fmt.Printf("Error loading Euler grids: %v\n", err)
 	}

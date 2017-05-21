@@ -1,4 +1,3 @@
-// main_bench
 package main
 
 import (
@@ -6,6 +5,8 @@ import (
 	"os"
 	"testing"
 )
+
+const eulerSolutionsFileName = "test_data/euler_solutions.json"
 
 // BenchmarkEuler tests the code on the Project Euler repository of Sudoko grids.
 // Note that each grid is treated as a single iteration for the purposes of
@@ -24,7 +25,7 @@ func BenchmarkEuler(b *testing.B) {
 }
 
 func TestEuler(t *testing.T) {
-	eulerSolnsFile, err := os.Open("euler_solutions.json")
+	eulerSolnsFile, err := os.Open(eulerSolutionsFileName)
 	if err != nil {
 		t.Fatalf("Unable to load soltions file: %v", err)
 		return

@@ -7,7 +7,7 @@ import (
 	"strings"
 )
 
-type GridCoord struct{ row, col int }
+type GridCoord struct{ Row, Col int }
 type GridValue int8
 
 var AllCoords []GridCoord
@@ -28,51 +28,51 @@ type Grid struct {
 }
 
 func (g *Grid) getNumOptions(coord GridCoord) int {
-	return 9 - int(g.eliminatedPossibilities[coord.row][coord.col])
+	return 9 - int(g.eliminatedPossibilities[coord.Row][coord.Col])
 }
 
 func (g *Grid) CanTakeValue(coord GridCoord, value GridValue) bool {
-	return g.possibleValues[coord.row][coord.col][value-1]
+	return g.possibleValues[coord.Row][coord.Col][value-1]
 }
 
 func (g *Grid) updateConflict(coord GridCoord, other GridValue) {
-	wasPossible := g.possibleValues[coord.row][coord.col][other-1]
+	wasPossible := g.possibleValues[coord.Row][coord.Col][other-1]
 	if wasPossible {
-		g.possibleValues[coord.row][coord.col][other-1] = false
-		g.eliminatedPossibilities[coord.row][coord.col]++
+		g.possibleValues[coord.Row][coord.Col][other-1] = false
+		g.eliminatedPossibilities[coord.Row][coord.Col]++
 	}
 }
 func (g *Grid) SetValue(coord GridCoord, value GridValue) {
 	g.filledCells++
-	g.fixedValues[coord.row][coord.col] = value
+	g.fixedValues[coord.Row][coord.Col] = value
 
 	g.updateAllConflicts(coord, value)
 }
 
 func (g *Grid) GetValue(coord GridCoord) GridValue {
-	return g.fixedValues[coord.row][coord.col]
+	return g.fixedValues[coord.Row][coord.Col]
 }
 
 func (g *Grid) updateAllConflicts(coord GridCoord, value GridValue) {
 	// Consider the values in my column
 	test := coord
-	for test.row = 0; test.row < 9; test.row++ {
+	for test.Row = 0; test.Row < 9; test.Row++ {
 		g.updateConflict(test, value)
 	}
 
 	// Consider the values in my row
 	test = coord
-	for test.col = 0; test.col < 9; test.col++ {
+	for test.Col = 0; test.Col < 9; test.Col++ {
 		g.updateConflict(test, value)
 	}
 
 	// Consider the values in my 3x3 box
 	root := GridCoord{
-		row: (coord.row / 3) * 3,
-		col: (coord.col / 3) * 3}
+		Row: (coord.Row / 3) * 3,
+		Col: (coord.Col / 3) * 3}
 
-	for test.row = root.row; test.row < root.row+3; test.row++ {
-		for test.col = root.col; test.col < root.col+3; test.col++ {
+	for test.Row = root.Row; test.Row < root.Row+3; test.Row++ {
+		for test.Col = root.Col; test.Col < root.Col+3; test.Col++ {
 			g.updateConflict(test, value)
 		}
 	}
@@ -82,7 +82,7 @@ func (g *Grid) Update() {
 	// Reset all possiblities to "true"
 	for _, coord := range AllCoords {
 		for k := 0; k < 9; k++ {
-			g.possibleValues[coord.row][coord.col][k] = true
+			g.possibleValues[coord.Row][coord.Col][k] = true
 		}
 	}
 
@@ -120,7 +120,7 @@ func (g *Grid) String() string {
 			if col > 0 && col%3 == 0 {
 				s = append(s, "|")
 			}
-			val := g.GetValue(GridCoord{row: row, col: col})
+			val := g.GetValue(GridCoord{Row: row, Col: col})
 			if val == 0 {
 				s = append(s, "*")
 			} else {
