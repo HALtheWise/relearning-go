@@ -1,5 +1,8 @@
 package main
 
+// Tests in this file serve as end-to-end tests that validate whether
+// the algorithm can correctly solve a wide variety of 9x9 Sodoku grids.
+
 import (
 	"encoding/json"
 	"os"
