@@ -138,3 +138,27 @@ func TestSetValue(t *testing.T) {
 		}
 	})
 }
+
+// TestClone verifies that cloning a grid transfers data in the original, but subsequent
+// mutations to the clone do not affect the original
+func TestClone(t *testing.T) {
+	t.Run("Values inherit", func(t *testing.T) {
+		grid := NewGrid()
+		coord := GridCoord{0, 0}
+		value := GridValue(3)
+
+		grid.SetValue(coord, value)
+
+		clone := grid.Clone()
+		if cloneval := clone.GetValue(coord); cloneval != value {
+			t.Errorf("Value in clone was %v but should have been %v", cloneval, value)
+		}
+	})
+
+	t.Run("Mutations don't track", func(t *testing.T) {
+		grid := NewGrid()
+		clone := grid.Clone()
+		clone.SetValue(GridCoord{0, 0}, GridValue(5))
+		t.Run("OriginalEmpty", verifyGridIsEmpty(grid))
+	})
+}
