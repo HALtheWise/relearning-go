@@ -45,7 +45,7 @@ func TestEuler(t *testing.T) {
 
 	for i, soln := range results {
 		if soln != eulerSolns[i] {
-			t.Errorf("Euler problem #%v returned:\n%s\nbut should have returned:\n%s", i+1, soln, eulerSolns[i])
+			t.Errorf("Euler problem #%v returned:\n%v\nbut should have returned:\n%v", i+1, soln, eulerSolns[i])
 		}
 	}
 

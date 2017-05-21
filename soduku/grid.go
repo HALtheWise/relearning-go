@@ -152,3 +152,9 @@ func GridFromString(s string) (*Grid, error) {
 	g.Update()
 	return &g, nil
 }
+
+func NewGrid() *Grid {
+	var g Grid
+	g.Update()
+	return &g
+}
